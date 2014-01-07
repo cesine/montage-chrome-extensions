@@ -37,14 +37,16 @@ exports.Main = Component.specialize( /** @lends Main# */ {
 	 * @type {string}
 	 * @private
 	 */
-	searchOnFlickr_: 'https://secure.flickr.com/services/rest/?' +
-		'method=flickr.photos.search&' +
-		'api_key=90485e931f687a9b9c2a66bf58a3861a&' +
-		'text=' + encodeURIComponent(QUERY) + '&' +
-		'safe_search=1&' +
-		'content_type=1&' +
-		'sort=interestingness-desc&' +
-		'per_page=20',
+	searchOnFlickr_: {
+		value: 'https://secure.flickr.com/services/rest/?' +
+			'method=flickr.photos.search&' +
+			'api_key=90485e931f687a9b9c2a66bf58a3861a&' +
+			'text=' + encodeURIComponent(QUERY) + '&' +
+			'safe_search=1&' +
+			'content_type=1&' +
+			'sort=interestingness-desc&' +
+			'per_page=20'
+		},
 
 	/**
 	 * Sends an XHR GET request to grab photos of lots and lots of kittens. The
@@ -52,11 +54,13 @@ exports.Main = Component.specialize( /** @lends Main# */ {
 	 *
 	 * @public
 	 */
-	requestKittens: function() {
-		var req = new XMLHttpRequest();
-		req.open("GET", this.searchOnFlickr_, true);
-		req.onload = this.showPhotos_.bind(this);
-		req.send(null);
+	requestKittens: {
+		value: function() {
+			var req = new XMLHttpRequest();
+			req.open("GET", this.searchOnFlickr_, true);
+			req.onload = this.showPhotos_.bind(this);
+			req.send(null);
+		}
 	},
 
 	/**
@@ -67,13 +71,15 @@ exports.Main = Component.specialize( /** @lends Main# */ {
 	 * @param {ProgressEvent} e The XHR ProgressEvent.
 	 * @private
 	 */
-	showPhotos_: function(e) {
-		var kittens = e.target.responseXML.querySelectorAll('photo');
-		for (var i = 0; i < kittens.length; i++) {
-			var img = document.createElement('img');
-			img.src = this.constructKittenURL_(kittens[i]);
-			img.setAttribute('alt', kittens[i].getAttribute('title'));
-			document.body.appendChild(img);
+	showPhotos_: {
+		value: function(e) {
+			var kittens = e.target.responseXML.querySelectorAll('photo');
+			for (var i = 0; i < kittens.length; i++) {
+				var img = document.createElement('img');
+				img.src = this.constructKittenURL_(kittens[i]);
+				img.setAttribute('alt', kittens[i].getAttribute('title'));
+				document.body.appendChild(img);
+			}
 		}
 	},
 
@@ -85,16 +91,18 @@ exports.Main = Component.specialize( /** @lends Main# */ {
 	 * @return {string} The kitten's URL.
 	 * @private
 	 */
-	constructKittenURL_: function(photo) {
-		return "http://farm" + photo.getAttribute("farm") +
-			".static.flickr.com/" + photo.getAttribute("server") +
-			"/" + photo.getAttribute("id") +
-			"_" + photo.getAttribute("secret") +
-			"_s.jpg";
+	constructKittenURL_: {
+		value: function(photo) {
+			return "http://farm" + photo.getAttribute("farm") +
+				".static.flickr.com/" + photo.getAttribute("server") +
+				"/" + photo.getAttribute("id") +
+				"_" + photo.getAttribute("secret") +
+				"_s.jpg";
+		}
 	},
-	
+
 	// Run our kitten generation script as soon as the document's DOM is ready.
-	enterDocument: {
+	draw: {
 		value: function(){
 			this.super();
 			this.requestKittens();
